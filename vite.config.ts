@@ -145,17 +145,23 @@ function authPopupPlugin(): Plugin {
 // `0.0.0.0:8080` is the live-preview contract — don't change host/port.
 // The dev server starts once `src/router.tsx` and `src/routes/` exist — see
 // AGENTS.md § "First scaffold".
+// `DATUM_PAGES=1` is the GitHub Pages static demo (`/datum/`), not the app server.
+const pages = process.env.DATUM_PAGES === "1";
+
 export default defineConfig(({ command, isPreview }) => ({
+  base: pages ? "/datum/" : "/",
   server: {
     host: "0.0.0.0",
     port: 8080,
     strictPort: true,
   },
-  preview: {
-    host: "127.0.0.1",
-    port: 8081,
-    strictPort: true,
-  },
+  preview: pages
+    ? { host: "127.0.0.1", port: 0, strictPort: false }
+    : {
+        host: "127.0.0.1",
+        port: 8081,
+        strictPort: true,
+      },
   resolve: { tsconfigPaths: true },
   plugins: [
     pgliteBootstrapPlugin(),
@@ -166,18 +172,32 @@ export default defineConfig(({ command, isPreview }) => ({
     // PWA head + ?install=1 tutorial page; runs before Start/Nitro.
     grokPwaPlugin(),
     tailwindcss(),
-    tanstackStart(),
-    ...(command === "build" || isPreview
-      ? [
-          nitro({
-            preset: "vercel",
-            // Auto-registers server/middleware/* (the PWA install page +
-            // manifest + head-tag middleware). Nitro v3 defaults serverDir to
-            // false, so removing this silently unwires /?install=1 on deploys.
-            serverDir: "./server",
-          }),
-        ]
-      : []),
+    tanstackStart(
+      pages
+        ? {
+            prerender: {
+              enabled: true,
+              crawlLinks: false,
+              autoStaticPathsDiscovery: false,
+            },
+            pages: [{ path: "/", prerender: { enabled: true } }],
+            router: { basepath: "/datum" },
+          }
+        : {},
+    ),
+    ...(pages
+      ? []
+      : command === "build" || isPreview
+        ? [
+            nitro({
+              preset: "vercel",
+              // Auto-registers server/middleware/* (the PWA install page +
+              // manifest + head-tag middleware). Nitro v3 defaults serverDir to
+              // false, so removing this silently unwires /?install=1 on deploys.
+              serverDir: "./server",
+            }),
+          ]
+        : []),
     viteReact(),
   ],
 }));

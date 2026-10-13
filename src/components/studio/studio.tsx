@@ -220,7 +220,8 @@ export function Studio() {
     }
   }
 
-  const endpoint = `${origin}/mcp?document=${sync.docId}`;
+  const pagesDemo = import.meta.env.VITE_DATUM_STATIC === "1";
+  const endpoint = pagesDemo ? "" : `${origin}/mcp?document=${sync.docId}`;
 
   return (
     <div className="studio" data-sheet={sheet}>
@@ -350,18 +351,27 @@ export function Studio() {
             <div className="pane-scroll">
               <section className="stack">
                 <h2 className="pane-kicker">Endpoint</h2>
-                <p className="muted">
-                  Streamable HTTP. After you publish, point Claude, Cursor, VS Code, or any MCP client at this URL. Tell the
-                  agent to call attach_document with the document id on the plate.
-                </p>
+                {pagesDemo ? (
+                  <p className="muted">
+                    Public demo. Tools run in this browser, so Run and Stamp note update the plate. GitHub Pages does not
+                    host the HTTP endpoint — run Datum and point an agent at <code className="spec">/mcp?document=live</code>.
+                  </p>
+                ) : (
+                  <p className="muted">
+                    Streamable HTTP. After you publish, point Claude, Cursor, VS Code, or any MCP client at this URL. Tell the
+                    agent to call attach_document with the document id on the plate.
+                  </p>
+                )}
                 <p className="muted">
                   <i className="status-dot" data-on={sync.status} />{" "}
                   {sync.status === "live" ? "Session live" : sync.status === "connecting" ? "Connecting" : "Editing locally"}
                 </p>
-                <code className="spec">{endpoint || "/mcp?document=live"}</code>
-                <Button variant="line" size="sm" onClick={() => void navigator.clipboard.writeText(endpoint).catch(() => undefined)}>
-                  Copy endpoint
-                </Button>
+                {pagesDemo ? null : <code className="spec">{endpoint || "/mcp?document=live"}</code>}
+                {pagesDemo ? null : (
+                  <Button variant="line" size="sm" onClick={() => void navigator.clipboard.writeText(endpoint).catch(() => undefined)}>
+                    Copy endpoint
+                  </Button>
+                )}
                 {sync.sessionId ? <p className="muted">Session {sync.sessionId.slice(0, 8)}</p> : null}
                 <label className="field">
                   <span>Document</span>

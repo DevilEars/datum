@@ -16,6 +16,10 @@ export type RpcResult = {
 let rpc = 1;
 
 export async function mcpRequest(sessionId: string | null, method: string, params?: unknown): Promise<RpcResult> {
+  if (import.meta.env.VITE_DATUM_STATIC === "1") {
+    const { browserMcpRequest } = await import("./browser-client");
+    return browserMcpRequest(sessionId, method, params);
+  }
   const headers: Record<string, string> = {
     "content-type": "application/json",
     accept: "application/json, text/event-stream",

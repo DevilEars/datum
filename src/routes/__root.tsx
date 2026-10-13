@@ -5,6 +5,8 @@ import appCss from "../styles.css?url";
 
 const APP_NAME = "Datum";
 
+const base = import.meta.env.BASE_URL;
+
 export const Route = createRootRoute({
   head: () => ({
     meta: [
@@ -15,7 +17,7 @@ export const Route = createRootRoute({
       { name: "theme-color", content: "#f4f0e6" },
     ],
     links: [
-      { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+      { rel: "icon", type: "image/svg+xml", href: `${base}favicon.svg` },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -23,8 +25,8 @@ export const Route = createRootRoute({
         href: "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap",
       },
       { rel: "stylesheet", href: appCss },
-      { rel: "manifest", href: "/__grok/manifest.webmanifest" },
-      { rel: "apple-touch-icon", href: "/__grok/icon-180.png" },
+      { rel: "manifest", href: `${base}__grok/manifest.webmanifest` },
+      { rel: "apple-touch-icon", href: `${base}__grok/icon-180.png` },
     ],
   }),
   component: () => (

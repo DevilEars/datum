@@ -5,7 +5,8 @@ import { Studio } from "@/components/studio/studio";
 export const Route = createFileRoute("/")({ component: Home });
 
 function Home() {
-  const [ready, setReady] = useState(false);
+  const pages = import.meta.env.VITE_DATUM_STATIC === "1";
+  const [ready, setReady] = useState(pages);
   useEffect(() => {
     setReady(true);
   }, []);

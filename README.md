@@ -1,6 +1,10 @@
 # Datum
 
-Draw.io studio for architecture and technical-specification figures. The open plate and an MCP client share one document, `live`.
+Draw.io MCP studio for architecture and technical-specification figures.
+
+**Public demo:** [devilears.github.io/datum](https://devilears.github.io/datum/)
+
+The demo is the drawing plate: templates, sketch, spec, `.drawio` export, and the MCP tool panel. Tools run in the browser on that site. GitHub Pages cannot host the Streamable HTTP endpoint.
 
 ## Run
 
@@ -9,21 +13,12 @@ npm install
 npm run dev
 ```
 
-The app serves the plate and a Streamable HTTP MCP endpoint at `/mcp?document=live`.
+Open the app and use the plate. The MCP endpoint is `/mcp?document=live`.
 
-## Draw
+An agent should call `attach_document` with `{ "id": "live" }`, then `import_sketch` (or `create_diagram`), then `validate`, `describe`, and `export_xml`.
 
-- Place shapes, connect them, reflow, and switch a page to a sequence.
-- **Spec** copies a markdown figure key.
-- **.drawio** downloads uncompressed diagrams.net XML.
-- **Edit** opens the same file in diagrams.net.
+The drawing engine lives in `src/lib/diagram`, the MCP server in `src/lib/mcp`, and the studio in `src/components/studio`.
 
-## MCP
+## GitHub Pages
 
-Point Claude, Cursor, VS Code, or any Streamable HTTP client at `/mcp?document=live`.
-
-The agent should call `attach_document` with id `live`, draw with `import_sketch` (or `add_nodes` / `add_edges`), then `validate`, `describe`, and `export_xml`.
-
-Keep the plate open while the agent draws. That document is in memory for the life of the server process, and the browser keeps a local copy.
-
-This tree includes the app shell it was built in (preview bridge, unused auth and database wiring). Datum itself lives in `src/lib/diagram`, `src/lib/mcp`, and `src/components/studio`.
+Pushes to `main` publish the static demo with GitHub Actions. The HTTP MCP server is not part of that build.
