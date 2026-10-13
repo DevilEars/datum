@@ -87,7 +87,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   try {
     handOver(staged, target);
   } catch (err) {
-    console.error(`[write-atomic] ${staged} → ${target} failed: ${err?.message || err}`);
+    console.error(`[write-atomic] ${staged} \u2192 ${target} failed: ${err?.message || err}`);
     process.exit(1);
   }
   console.log(`[write-atomic] wrote ${target}`);
